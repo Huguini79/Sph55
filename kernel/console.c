@@ -45,9 +45,9 @@ void ConsoleInstall()
 
 void scroll()
 {
-    for (int i = VGA_WIDTH; i < VGA_HEIGHT * VGA_WIDTH; ++i)
+    for (int i = 0; i < VGA_HEIGHT * VGA_WIDTH; ++i)
     {
-        framebuffer[i - VGA_WIDTH] = framebuffer[i];
+        framebuffer[i] = framebuffer[i + VGA_WIDTH];
     }
 
     for (int i2 = (VGA_HEIGHT - 1) * VGA_WIDTH; i2 < VGA_WIDTH * VGA_HEIGHT; ++i2)
