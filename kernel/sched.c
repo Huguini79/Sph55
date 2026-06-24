@@ -31,7 +31,7 @@ void do_sleep(int s)
     callouts[offset].ticks = s * 1000;
 }
 
-struct pcb* createProcess(pid_t pid)
+struct pcb* createProcess(pid_t pid, uint32_t func)
 {
     struct pcb* newProcess = &processes_table[pid];
     newProcess->pid = pid;
@@ -48,10 +48,11 @@ struct pcb* createProcess(pid_t pid)
     newProcess->tss.ecx = 0;
     newProcess->tss.edx = 0;
     newProcess->tss.ebx = 0;
+    newProcess->tss.eip = func;
     uint32_t* stack = (uint32_t*)0x3FF00 + pid * 8192; /* 8 KB of stack for each process */
     stack--;
     *stack = (uint32_t)yield;
-    newProcess->tss.esp = (uint32_t*)stack;
+    newProcess->tss.esp = (uint32_t)stack;
     newProcess->tss.ebp = 0;
     newProcess->tss.cs = 0x08;
     newProcess->tss.es = 0x10;
@@ -59,7 +60,10 @@ struct pcb* createProcess(pid_t pid)
     newProcess->tss.gs = 0x10;
     newProcess->tss.ds = 0x10;
     newProcess->tss.ss = 0x10;
+    newProcess->tss.eflags = 0x202;
     newProcess->tss.iopb = 0x80000000;
+
+    addTssDescriptor(newProcess);
 
     return newProcess;
 }
@@ -73,7 +77,7 @@ void switch_to(struct pcb* pcb)
 {
     if (pcb != NULL)
     {
-        uint16_t tss_selector = (pcb->pid + 4) * 8;
+        uint16_t tss_selector = (pcb->pid + 3) * 8;
         
         volatile struct
         {

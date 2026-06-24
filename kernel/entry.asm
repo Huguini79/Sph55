@@ -1,5 +1,11 @@
 BITS 32
 
+section .bss
+align 4
+stack_bottom:
+    resb 65536 ; 64 Kilobytes
+stack_top:
+
 section .text
 
 align 4
@@ -13,7 +19,7 @@ extern kernel_main
 
 start:
     cli
-    mov esp, 0x600000
+    mov esp, stack_top
     call remapPIC
     call kernel_main
     hlt
@@ -43,6 +49,3 @@ remapPIC:
     out 0x21, al
     out 0xA1, al
     ret
-
-section .bss
-stack_space resb 65536

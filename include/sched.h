@@ -43,6 +43,7 @@ struct tss
     uint32_t ds;
     uint32_t fs;
     uint32_t gs;
+    uint32_t ldtr;
     uint32_t iopb;
 
 } __attribute__((packed));
@@ -66,7 +67,7 @@ extern struct pcb* current;
 
 void check_callouts(uint32_t ticks);
 void do_sleep(int s);
-struct pcb* createProcess(pid_t pid);
+struct pcb* createProcess(pid_t pid, uint32_t func);
 void yield();
 
 #endif
