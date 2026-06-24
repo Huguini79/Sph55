@@ -9,7 +9,8 @@ void kernel_main()
     GdtInstall();
     IdtInstall();
     ConsoleInstall();
-    printk("Welcome to SPH55 Operating System from Scratch\n\n# ");
+
+    printk("# ");
 
     // sleep(3);
 

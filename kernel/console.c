@@ -45,14 +45,19 @@ void ConsoleInstall()
 
 void scroll()
 {
-    for (int i = 0; i < VGA_HEIGHT * VGA_WIDTH; ++i)
+    for (int i = VGA_WIDTH * 3; i < VGA_HEIGHT * VGA_WIDTH; ++i)
     {
         framebuffer[i] = framebuffer[i + VGA_WIDTH];
     }
 
-    for (int i2 = (VGA_HEIGHT - 1) * VGA_WIDTH; i2 < VGA_WIDTH * VGA_HEIGHT; ++i2)
+    for (int i2 = (VGA_HEIGHT - 1) * VGA_WIDTH - 2; i2 < VGA_WIDTH * VGA_HEIGHT; ++i2)
     {
         framebuffer[i2] = 0x0F << 8 | ' ';
+    }
+
+    for (int i = VGA_WIDTH * 3 + VGA_WIDTH - 1; i < VGA_HEIGHT * VGA_WIDTH; i += VGA_WIDTH)
+    {
+        framebuffer[i] = 0x0F << 8 | '|';
     }
 
 }
@@ -104,5 +109,17 @@ void clear()
             put_c(' ', ii, i);
         }
     }
+
+    for (int i = VGA_WIDTH * 3 + VGA_WIDTH - 1; i < VGA_HEIGHT * VGA_WIDTH; i += VGA_WIDTH)
+    {
+        framebuffer[i] = 0x0F << 8 | '|';
+    }
+
+    printk("Welcome to SPH55 Operating System from Scratch\n\n");
+    for (int i = 0; i < 80; ++i)
+    {
+        printk("-");
+    }
+
 
 }
