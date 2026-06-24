@@ -1,3 +1,5 @@
+#include "include/sched.h"
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -47,6 +49,11 @@ void GdtInstall()
     setGdtDescriptor(0, 0, 0, 0, 0, 0, 0);
     setGdtDescriptor(1, 0xFFFF, 0, 0, 0x9B, 0xCF, 0);
     setGdtDescriptor(2, 0xFFFF, 0, 0, 0x93, 0xCF, 0);
+    struct tss tss;
+    tss.esp0 = 0x600000;
+    tss.ss0 = 0x10;
+    uint32_t tss_address = (uint32_t)&tss;
+    setGdtDescriptor(3, sizeof(tss), tss_address & 0xFFFF, (tss_address >> 16) & 0xFF, 0x89, 0x40, (tss_address >> 24) & 0xFF);
 
     Gdtr.limit = sizeof(gdt_table) - 1;
     Gdtr.base = (uint32_t)gdt_table;

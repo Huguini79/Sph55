@@ -1,5 +1,6 @@
 #include "include/string.h"
 #include "include/console.h"
+#include "include/io.h"
 
 #include <stdint.h>
 #include <stddef.h>
@@ -42,6 +43,20 @@ void ConsoleInstall()
     clear();
 }
 
+void scroll()
+{
+    for (int i = VGA_WIDTH; i < VGA_HEIGHT * VGA_WIDTH; ++i)
+    {
+        framebuffer[i - VGA_WIDTH] = framebuffer[i];
+    }
+
+    for (int i2 = (VGA_HEIGHT - 1) * VGA_WIDTH; i2 < VGA_WIDTH * VGA_HEIGHT; ++i2)
+    {
+        framebuffer[i2] = 0x0F << 8 | ' ';
+    }
+
+}
+
 void printk(const char* str)
 {
     size_t len = strlen(str);
@@ -56,8 +71,9 @@ void printk(const char* str)
 
         if (y >= VGA_HEIGHT)
         {
-            clear();
-            printk(">");
+            scroll();
+            y = 24;
+            x = 0;
         }
         
         if (str[i] == '\n')

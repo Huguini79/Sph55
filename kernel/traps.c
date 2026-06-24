@@ -4,6 +4,8 @@
 #include "include/console.h"
 #include "include/io.h"
 #include "include/keyboard.h"
+#include "include/sched.h"
+#include "include/string.h"
 
 struct Idt
 {
@@ -39,7 +41,13 @@ void setIdtDescriptor(int vector, int type_attributes, void* isr)
 volatile uint32_t ticks = 0;
 
 void zero_handler() {printk("DIVIDE BY ZERO ERROR");}
-void pit_handler() {ticks += 1; outb(0x20, 0x20);}
+void pit_handler()
+{
+    char buf[256];
+    ticks += 10;
+    check_callouts(ticks);
+    outb(0x20, 0x20);
+}
 void keyboard_handler() {keyboard_handler_ext(); outb(0x20, 0x20);}
 void syscall_handler() {printk("SYSCALL CALLED"); outb(0x20, 0x20);}
 

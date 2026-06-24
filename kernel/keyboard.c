@@ -3,6 +3,7 @@
 
 #include "include/console.h"
 #include "include/io.h"
+#include "include/string.h"
 
 char keyboard_buffer[12312];
 
@@ -75,7 +76,7 @@ void keyboard_handler_ext()
             printk(keyboard_buffer);
             printk(": not found\n");
         }
-        printk("> ");
+        printk("# ");
         pos = 0;
         keyboard_buffer[pos] = '\0';
     }
