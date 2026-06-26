@@ -33,6 +33,11 @@ void do_sleep(int s)
     callouts[offset].ticks = s * 1000;
 }
 
+void yo()
+{
+    
+}
+
 struct pcb* createProcess(pid_t pid, uint32_t func)
 {
     struct pcb* newProcess = &processes_table[pid];
@@ -59,7 +64,7 @@ struct pcb* createProcess(pid_t pid, uint32_t func)
     newProcess->tss.fs = 0x10;
     newProcess->tss.gs = 0x10;
     uint32_t* stack = (uint32_t*)0x3FF00 + pid * 8192; /* 8 KB of stack for each process */
-    *stack = yield;
+    *stack = yo;
     newProcess->tss.esp = (uint32_t)stack;
     newProcess->tss.ebp = 0;
     newProcess->tss.iopb = 0x80000000;
@@ -71,15 +76,31 @@ struct pcb* createProcess(pid_t pid, uint32_t func)
 
 void yield()
 {
-    current = next;
-    if (&processes_table[current->pid].tss.eip != NULL)
+    if (next != NULL)
     {
-        next = &processes_table[current->pid+1];
+        current = next;
+        if (&processes_table[current->pid].tss.eip != NULL)
+        {
+            next = &processes_table[current->pid+1];
+        }
+        if (current->tss.eip != NULL)
+        {
+            switch_to(current);
+
+        } else
+        {
+            current = &processes_table[1];
+            if (current->tss.eip != NULL)
+            {
+                switch_to(current);
+            }
+        }
     }
-    if (current->tss.eip != NULL)
-    {
-        switch_to(current);
-    }
+}
+
+pid_t getCurrentPID()
+{
+    return current->pid;
 }
 
 void copyProcess(struct pcb* dest, struct pcb* origin)

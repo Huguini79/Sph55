@@ -70,6 +70,7 @@ void check_callouts(uint32_t ticks);
 void do_sleep(int s);
 struct pcb* createProcess(pid_t pid, uint32_t func);
 void yield();
+pid_t getCurrentPID();
 void switch_to(struct pcb* pcb);
 void switch_current();
 

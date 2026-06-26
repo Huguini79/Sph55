@@ -3,7 +3,7 @@ CC = gcc
 LD = ld
 
 AS_FLAGS = -f elf32
-CC_FLAGS = -I./ -c -m32 -ffreestanding -nostdlib
+CC_FLAGS = -I./ -m32 -c -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Wno-pointer-to-int-cast -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -Os -Iinc
 
 TARGET = Sph55.iso
 
