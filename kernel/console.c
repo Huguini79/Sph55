@@ -4,18 +4,31 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
+
 #define DEFAULT_FONT 0x0F
+#define KERNEL_PANIC_FONT 0x4F
 
 uint16_t* framebuffer;
 int x = 0;
 int y = 0;
 
+bool value = false;
+
+void kernel_panic()
+{
+    value = true;
+}
+
 void put_c(char c, int x, int y)
 {
-    framebuffer[(y * VGA_WIDTH) + x] = DEFAULT_FONT << 8 | c;
+    if (value != true)
+        framebuffer[(y * VGA_WIDTH) + x] = DEFAULT_FONT << 8 | c;
+    else
+        framebuffer[(y * VGA_WIDTH) + x] = KERNEL_PANIC_FONT << 8 | c;
 }
 
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)

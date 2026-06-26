@@ -44,11 +44,6 @@ void setGdtDescriptor(
     Gdt->base_high = base_high;
 }
 
-void clearBitBusy(uint16_t selector)
-{
-    gdt_table[selector >> 3].access_byte = 0x89;
-}
-
 void addTssDescriptor(struct pcb* pcb)
 {
     uint32_t tss_address = (uint32_t)&pcb->tss;

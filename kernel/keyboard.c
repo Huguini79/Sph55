@@ -4,10 +4,15 @@
 #include "include/console.h"
 #include "include/io.h"
 #include "include/string.h"
+#include "include/sched.h"
 
 char keyboard_buffer[12312];
+uint8_t scancode;
 
 int pos = 0;
+
+struct pcb* newProcess;
+struct pcb* newProc;
 
 void addCharacter(char c)
 {
@@ -15,9 +20,24 @@ void addCharacter(char c)
     keyboard_buffer[pos] = '\0';
 }
 
+void funct2()
+{
+    printk("\nTASK2: Second process in execution");
+    switch_to(newProcess);
+    printk("\nTASK2: I'm back");
+    switch_to(newProcess);
+}
+
+void funct()
+{
+    printk("\nTASK1: Hello World!");
+    // newProc = createProcess(2, (uint32_t)funct2);
+    // yield();
+}
+
 void keyboard_handler_ext()
 {
-    uint8_t scancode = insb(0x60);
+    scancode = insb(0x60);
     if (scancode == 0x1E) {printk("a"); addCharacter('a');}
     if (scancode == 0x30) {printk("b"); addCharacter('b');}
     if (scancode == 0x2E) {printk("c"); addCharacter('c');}
@@ -65,7 +85,35 @@ void keyboard_handler_ext()
         {
             clear();
 
-        } else if (strcmp(keyboard_buffer, "") == 0)
+        }
+
+        else if (strcmp(keyboard_buffer, "help") == 0)
+        {
+            printk("\nclear                                 help\nloadprocess                           exec\nyield\n");
+        }
+        
+        else if (strcmp(keyboard_buffer, "loadprocess") == 0)
+        {
+            newProcess = createProcess(1, (uint32_t)funct);
+            printk("\n");
+            // switch_to(newProcess);
+
+        }
+
+        else if (strcmp(keyboard_buffer, "yield") == 0)
+        {
+            yield();
+        }
+
+        else if (strcmp(keyboard_buffer, "exec") == 0)
+        {
+            if (current->tss.eip != NULL)
+                switch_current();
+            else
+                printk("\nPLEASE LOAD A PROCESS AT FIRST\n");
+        }
+
+        else if (strcmp(keyboard_buffer, "") == 0)
         {
             printk("\n");
         }

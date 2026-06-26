@@ -6,17 +6,17 @@ section .text
 
 global enablePaging
 global loadPageDirectory
-extern page_directory
 
 enablePaging:
     mov ebx, cr0
     or ebx, PG_BIT
     mov cr0, ebx
-    jmp .flush_pipeline
-.flush_pipeline:
     ret
 
 loadPageDirectory:
-    mov eax, page_directory
+    push ebp
+    mov ebp, esp
+    mov eax, [ebp + 8]
     mov cr3, eax
+    pop ebp
     ret

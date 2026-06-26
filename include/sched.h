@@ -59,7 +59,8 @@ struct pcb
     uint32_t exit_code;
     uint16_t uid, euid, gid, egid;
     time_t time;
-    struct tss tss; /* REGISTERS */
+    struct tss tss;
+    // uint32_t eax, ecx, edx, ebx, esi, edi, ebp, esp, eip;
 };
 
 extern struct pcb processes_table[64];
@@ -69,5 +70,7 @@ void check_callouts(uint32_t ticks);
 void do_sleep(int s);
 struct pcb* createProcess(pid_t pid, uint32_t func);
 void yield();
+void switch_to(struct pcb* pcb);
+void switch_current();
 
 #endif
