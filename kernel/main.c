@@ -13,7 +13,7 @@ struct pcb* process3;
 void funct3()
 {
     char buf[16];
-    printk("TASK3: I am the third process! | PID=");
+    printk("\nTASK3: I am the third process! | PID=");
     pid_t pid = getCurrentPID();
     itoa(pid, buf, 10);
     printk(buf);
@@ -24,22 +24,23 @@ void funct3()
 void funct2()
 {
     char buf[16];
-    printk("TASK2: I am the second process! | PID=");
+    printk("\nTASK2: I am the second process! | PID=");
     pid_t pid = getCurrentPID();
     itoa(pid, buf, 10);
     printk(buf);
     printk("\n");
-    while (1) {}
 
     // switch_to(newProcess);
     // printk("\nTASK2: I'm back");
-    // switch_to(newProcess);
+    switch_to(process3);
+    printk("\nTASK2: I'm back");
+    while (1) {}
 }
 
 void funct()
 {
     char buf[16];
-    printk("TASK1: Hello World! | PID=");
+    printk("\nTASK1: Hello World! | PID=");
     pid_t pid = getCurrentPID();
     itoa(pid, buf, 10);
     printk(buf);

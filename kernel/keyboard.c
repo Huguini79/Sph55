@@ -5,6 +5,7 @@
 #include "include/io.h"
 #include "include/string.h"
 #include "include/sched.h"
+#include "include/idt.h"
 
 char keyboard_buffer[12312];
 uint8_t scancode;
@@ -71,12 +72,17 @@ void keyboard_handler_ext()
 
         else if (strcmp(keyboard_buffer, "help") == 0)
         {
-            printk("\nclear                                 help");
+            printk("\nclear                                 help\ninitmultitasking\n");
         }
 
         else if (strcmp(keyboard_buffer, "") == 0)
         {
             printk("\n");
+        }
+        
+        else if (strcmp(keyboard_buffer, "initmultitasking") == 0)
+        {
+            multitasking_init = true;
         }
         
         else

@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "include/console.h"
 #include "include/io.h"
@@ -9,6 +10,7 @@
 #include "include/string.h"
 
 uint32_t current_eax, current_ecx, current_edx, current_ebx, current_edi, current_esi, current_esp, current_eip = 0;
+bool multitasking_init = false;
 
 struct Idt
 {
@@ -65,7 +67,10 @@ void pit_handler()
     outb(0x20, 0x20);
     ticks += 10;
     check_callouts(ticks);
-    yield();
+    if (multitasking_init)
+    {
+        yield();
+    }
 }
 
 void panic(const char* str)
