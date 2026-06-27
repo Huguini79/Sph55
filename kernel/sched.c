@@ -4,7 +4,7 @@
 
 struct callout callouts[64] = {0};
 struct pcb processes_table[64] = {0};
-struct pcb* current = &processes_table[0];
+struct pcb* current = &processes_table[1];
 struct pcb* next = &processes_table[1];
 
 void check_callouts(uint32_t ticks)
@@ -74,28 +74,35 @@ struct pcb* createProcess(pid_t pid, uint32_t func)
     return newProcess;
 }
 
+int is_valid_process(pid_t pid)
+{
+    return processes_table[pid].tss.eip != 0;
+}
+
 void yield()
 {
-    if (next != NULL)
-    {
-        current = next;
-        if (&processes_table[current->pid].tss.eip != NULL)
-        {
-            next = &processes_table[current->pid+1];
-        }
-        if (current->tss.eip != NULL)
-        {
-            switch_to(current);
+    pid_t start = current->pid;
+    pid_t next_pid = -1;
 
-        } else
+    for (int i = 1; i < 64; ++i)
+    {
+        pid_t pid = (start + i) % 64;
+
+        if (is_valid_process(pid))
         {
-            current = &processes_table[1];
-            if (current->tss.eip != NULL)
-            {
-                switch_to(current);
-            }
+            next_pid = pid;
+            break;
         }
+
     }
+
+    if (next_pid == -1)
+        return;
+
+    next = &processes_table[next_pid];
+    current = next;
+    switch_to(current);
+
 }
 
 pid_t getCurrentPID()

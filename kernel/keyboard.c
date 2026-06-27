@@ -11,50 +11,10 @@ uint8_t scancode;
 
 int pos = 0;
 
-struct pcb* newProcess;
-struct pcb* newProc;
-struct pcb* process3;
-
 void addCharacter(char c)
 {
     keyboard_buffer[pos++] = c;
     keyboard_buffer[pos] = '\0';
-}
-
-void funct3()
-{
-    char buf[16];
-    printk("TASK3: I am the third process! | PID=");
-    pid_t pid = getCurrentPID();
-    itoa(pid, buf, 10);
-    printk(buf);
-    printk("\n");
-}
-
-void funct2()
-{
-    char buf[16];
-    printk("TASK2: I am the second process! | PID=");
-    pid_t pid = getCurrentPID();
-    itoa(pid, buf, 10);
-    printk(buf);
-    printk("\n");
-
-    // switch_to(newProcess);
-    // printk("\nTASK2: I'm back");
-    // switch_to(newProcess);
-}
-
-void funct()
-{
-    char buf[16];
-    printk("\nTASK1: Hello World! | PID=");
-    pid_t pid = getCurrentPID();
-    itoa(pid, buf, 10);
-    printk(buf);
-    printk("\n");
-    while (1) {printk("A");}
-    // yield();
 }
 
 void keyboard_handler_ext()
@@ -111,21 +71,7 @@ void keyboard_handler_ext()
 
         else if (strcmp(keyboard_buffer, "help") == 0)
         {
-            printk("\nclear                                 help\nloadprocess                               yield\n");
-        }
-        
-        else if (strcmp(keyboard_buffer, "loadprocess") == 0)
-        {
-            newProcess = createProcess(1, (uint32_t)funct);
-            newProc = createProcess(2, (uint32_t)funct2);
-            process3 = createProcess(3, (uint32_t)funct3);
-            printk("\n");
-            // switch_to(newProcess);
-        }
-
-        else if (strcmp(keyboard_buffer, "yield") == 0)
-        {
-            yield();
+            printk("\nclear                                 help");
         }
 
         else if (strcmp(keyboard_buffer, "") == 0)
